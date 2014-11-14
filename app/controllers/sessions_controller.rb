@@ -1,23 +1,23 @@
 class SessionsController < ApplicationController
 
-#login form
 	def new
+
 	end
 
-#where the login form POSTs data
 	def create
-		user = User.where(:name => params[:username]).first
-		if user.present? && user.authenticate(params[:password])
+		user = User.authenticate params[:session][:username], params[:session][:password]
+
+		if user.present?
 			session[:user_id] = user.id
-			redirect_to root_path
+			redirect_to root_path, notice: 'You have successfully logged in'
 		else 
-			redirect_to login_path
+			render :new
 		end
 	end
 
-#logout
 	def destroy
 		session[:user_id] = nil
-		redirect_to root_path
+		redirect_to root_path, notice: 'You have successfully logged out'
 	end
+
 end
